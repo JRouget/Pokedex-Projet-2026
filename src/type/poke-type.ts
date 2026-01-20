@@ -1,4 +1,3 @@
-javascript 
 export interface APINamedRessource{
     name: string;
     url: string;
