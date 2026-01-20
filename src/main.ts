@@ -19,16 +19,34 @@ async function affichage () {
                 console.log(`Le premier Pokémon est : ${currentDisplayList[0].name}`);
             }
         }
+        return currentDisplayList;
     } catch (error) {
         console.error(error);
     }
 }
 
-affichage();
 
-function pokemon() {
-    for (let pokemon of currentDisplayList) {
+
+async function chargerPokedex() {
+
+    const data = await getListPokemons();
+    const container = document.getElementById("pokedex-container");
+    let toutLeHTML = "";
+
+    data.results.forEach((pokemon, index) => {
         console.log(pokemon.name);
-    }
+        const id = index + 1;
+        const image = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+
+        toutLeHTML += `
+            <div class="carte">
+                <img src="${image}" alt="${pokemon.name}">
+                <h3>${pokemon.name}</h3>
+            </div>
+        `;
+    });
+
+    container.innerHTML = toutLeHTML;
 }
-pokemon();
+
+chargerPokedex();
