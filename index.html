@@ -1,14 +1,22 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style/index-style.css">
     <title>Mon Pokédex</title>
 </head>
+
 <body>
-    <h1>⚡ Pokedex ⚡</h1>
+    <app-header></app-header>
+    <script src="./src/composants/header.ts"></script>
 
     <div id="pokedex-container">Chargement des Pokémon...</div>
-<script type="module" src="src/main.ts"></script>
+    <script type="module" src="src/main.ts"></script>
+
+    <app-footer></app-footer>
+    <script src="./src/composants/footer.ts"></script>
 </body>
+
 </html>

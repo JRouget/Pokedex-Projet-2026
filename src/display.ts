@@ -1,5 +1,6 @@
 import { getListPokemons } from './service/specifyAPI'
 
+
 type LitePokemon = { name: string; url: string; };
 
 let fullRepository: LitePokemon[] = [];
@@ -33,20 +34,20 @@ export async function chargerPokedex() {
     const container = document.getElementById("pokedex-container");
 
     const pokemon = affichage();
-    let toutLeHTML = "";
+    let displayHTML = "";
 
     data.results.forEach((pokemon, index) => {
         console.log(pokemon.name);
         const id = index + 1;
         const image = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
 
-        toutLeHTML += `
-            <a id="btn-card" href="../html/card.html"><div class="carte">
+        displayHTML += `
+            <a href="../html/card.html?id=${id}"><div class="carte">
                 <img src="${image}" alt="${pokemon.name}">
                 <h3>${pokemon.name}</h3>
             </div></a>
         `;
     });
 
-    container.innerHTML = toutLeHTML;
+    container.innerHTML = displayHTML;
 }
