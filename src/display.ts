@@ -1,3 +1,4 @@
+
 import { getListPokemons } from './service/specifyAPI'
 
 
@@ -8,9 +9,7 @@ let currentDisplayList: LitePokemon[] = [];
 
 async function affichage () {
     try {
-        const limit = 15;
-        const offset = 0;
-        const response = await getListPokemons(limit, offset);
+        const response = await getListPokemons();
 
         if (response && response.results) {
             fullRepository = response.results;
@@ -51,9 +50,5 @@ export async function chargerPokedex() {
         `;
     });
 
-    container.innerHTML = toutLeHTML;
+    container.innerHTML = displayHTML;
 }
-
-
-//const prev = page === 1 ? undefined : page - 1;
-//const next = page === pages.length ? undefined : page + 1;
