@@ -39,7 +39,7 @@ export async function chargerPokedex() {
     data.results.forEach((pokemon, index) => {
         console.log(pokemon.name);
         const id = index + 1;
-        const image = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+        const image = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-vii/icons/${id}.png`;
 
         displayHTML += `
             <a href="../html/card.html?id=${id}"><div class="carte">
