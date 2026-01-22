@@ -20,12 +20,9 @@ class pokeFooter extends HTMLElement {
   </div>
 
   <div class="footer-right">
-    <button id="btn-precedent" class="nav-arrow">«</button>
-    <select id="page-select" class="page-select"></select>
-    <button id="btn-suivant" class="nav-arrow">»</button>
-    <a href="../index.html"><span class="nav-cross">✖</span></a>
-    <a href="#" onclick="history.back(); return false;"><span class="nav-return">U</span></a>
-  </div>
+            <a href="../index.html"><span class="nav-cross">✖</span></a>
+            <a href="#" id="btn-back"><span class="nav-return">U</span></a>
+          </div>
 
   <style>
   .pokedex-footer {
@@ -131,6 +128,8 @@ class pokeFooter extends HTMLElement {
 </footer>
 `
     }
+
+    
 }
 
 

@@ -1,3 +1,4 @@
+
 import { getListPokemons } from './service/specifyAPI'
 import { initialiserPagination, genererSelectPages, POKEMONS_PAR_PAGE, resetPage } from './pagination';
 
@@ -6,15 +7,45 @@ type LitePokemon = { name: string; url: string; };
 let fullRepository: LitePokemon[] = [];
 let currentList: LitePokemon[] = [];
 
-function afficherPage(page: number) {
-    const container = document.getElementById("pokedex-container");
-    const start = page * POKEMONS_PAR_PAGE;
-    const end = start + POKEMONS_PAR_PAGE;
-    const pokemonsPage = currentList.slice(start, end);
-    let displayHTML = "";
 
-    pokemonsPage.forEach((pokemon) => {
-        const id = fullRepository.indexOf(pokemon) + 1;
+let pageNumber=1;
+let pkmPerPage=20;
+
+async function affichage () {
+    try {
+        const offset = (pageNumber - 1)*pkmPerPage
+        const response = await getListPokemons(pkmPerPage, offset);
+
+        if (response && response.results) {
+            fullRepository = response.results;
+            currentDisplayList = [...fullRepository];
+
+            console.log("Voici la liste brute :", currentDisplayList);
+
+            if (currentDisplayList.length > 0) {
+                console.log(`Le premier Pokémon est : ${currentDisplayList[0].name}`);
+            }
+        }
+        return currentDisplayList;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export async function chargerPokedex() {
+
+    const offset = (pageNumber - 1)*pkmPerPage
+    const data = await getListPokemons(pkmPerPage, offset);
+    const container = document.getElementById("pokedex-container");
+
+    let displayHTML = `
+            <button id="btn-prev" class="nav-arrow">« Précédent</button>
+            <span id="page-display"> Page 1 </span>
+            <button id="btn-next" class="nav-arrow">Suivant »</button>";`
+
+    data?.results.forEach((pokemon, index) => {
+        console.log(pokemon.name);
+        const id = offset + index + 1;
         const image = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-vii/icons/${id}.png`;
 
         displayHTML += `
@@ -25,31 +56,20 @@ function afficherPage(page: number) {
         `;
     });
 
-    if (container) container.innerHTML = displayHTML;
+    container.innerHTML = displayHTML;
+
+    document.getElementById("btn-prev")?.addEventListener("click", () => {previousPage()})
+    document.getElementById("btn-next")?.addEventListener("click", () => {nextPage()})
 }
 
-export async function chargerPokedex() {
-    try {
-        const response = await getListPokemons();
-
-        if (response && response.results) {
-            fullRepository = response.results;
-            currentList = fullRepository;
-
-            const searchInput = document.getElementById('search-input');
-            searchInput?.addEventListener('input', (e) => {
-                const term = (e.target as HTMLInputElement).value.toLowerCase();
-                currentList = fullRepository.filter(p => p.name.toLowerCase().includes(term));
-                resetPage();
-                genererSelectPages(currentList.length);
-                afficherPage(0);
-            });
-
-            genererSelectPages(currentList.length);
-            initialiserPagination(afficherPage);
-            afficherPage(0);
-        }
-    } catch (error) {
-        console.error(error);
+async function previousPage() {
+    if (pageNumber>1){
+    pageNumber = pageNumber - 1;
+    await chargerPokedex ();
     }
+}
+
+async function nextPage() {
+    pageNumber = pageNumber + 1;
+    await chargerPokedex ();
 }
