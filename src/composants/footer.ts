@@ -10,10 +10,6 @@ class pokeFooter extends HTMLElement {
   <div class="footer-left">
     <button class="ds-button">
       <span class="icon">🔍</span>
-      <form action="" method="get">
-        <input type="search" name="search" placeholder="Enter a name . . ." required>
-        <button type="submit">Research</button>
-      </form>
     </button>
     <button class="ds-button">
       <span class="icon">📄</span> SELECT

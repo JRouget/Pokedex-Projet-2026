@@ -39,3 +39,9 @@ export function genererSelectPages(totalPokemons: number) {
         }
     }
 }
+
+export function resetPage() {
+    pageActuelle = 0;
+    const menuPages = document.querySelector('#page-select') as HTMLSelectElement | null;
+    if (menuPages) menuPages.value = "0";
+}

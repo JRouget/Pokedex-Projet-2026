@@ -1,19 +1,19 @@
 import { getListPokemons } from './service/specifyAPI'
-import { initialiserPagination, genererSelectPages, POKEMONS_PAR_PAGE } from './pagination';
+import { initialiserPagination, genererSelectPages, POKEMONS_PAR_PAGE, resetPage } from './pagination';
 
 type LitePokemon = { name: string; url: string; };
 
 let fullRepository: LitePokemon[] = [];
+let currentList: LitePokemon[] = [];
 
 function afficherPage(page: number) {
     const container = document.getElementById("pokedex-container");
     const start = page * POKEMONS_PAR_PAGE;
     const end = start + POKEMONS_PAR_PAGE;
-    const pokemonsPage = fullRepository.slice(start, end);
+    const pokemonsPage = currentList.slice(start, end);
     let displayHTML = "";
 
     pokemonsPage.forEach((pokemon) => {
-        console.log(pokemon.name);
         const id = fullRepository.indexOf(pokemon) + 1;
         const image = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-vii/icons/${id}.png`;
 
@@ -34,14 +34,18 @@ export async function chargerPokedex() {
 
         if (response && response.results) {
             fullRepository = response.results;
+            currentList = fullRepository;
 
-            console.log("Voici la liste brute :", fullRepository);
+            const searchInput = document.getElementById('search-input');
+            searchInput?.addEventListener('input', (e) => {
+                const term = (e.target as HTMLInputElement).value.toLowerCase();
+                currentList = fullRepository.filter(p => p.name.toLowerCase().includes(term));
+                resetPage();
+                genererSelectPages(currentList.length);
+                afficherPage(0);
+            });
 
-            if (fullRepository.length > 0) {
-                console.log(`Le premier Pokémon est : ${fullRepository[0].name}`);
-            }
-
-            genererSelectPages(fullRepository.length);
+            genererSelectPages(currentList.length);
             initialiserPagination(afficherPage);
             afficherPage(0);
         }
