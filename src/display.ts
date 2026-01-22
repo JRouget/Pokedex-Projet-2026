@@ -7,9 +7,13 @@ type LitePokemon = { name: string; url: string; };
 let fullRepository: LitePokemon[] = [];
 let currentDisplayList: LitePokemon[] = [];
 
+let pageNumber=1;
+let pkmPerPage=20;
+
 async function affichage () {
     try {
-        const response = await getListPokemons();
+        const offset = (pageNumber - 1)*pkmPerPage
+        const response = await getListPokemons(pkmPerPage, offset);
 
         if (response && response.results) {
             fullRepository = response.results;
@@ -27,7 +31,15 @@ async function affichage () {
     }
 }
 
+async function previous() {
+    pageNumber = pageNumber - 1;
+    await affichage ();
+}
 
+async function next() {
+    const pagenext = pageNumber + 1;
+    await affichage ();
+}
 
 export async function chargerPokedex() {
 
