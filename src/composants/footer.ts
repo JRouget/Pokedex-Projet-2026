@@ -9,7 +9,7 @@ class pokeFooter extends HTMLElement {
   
   <div class="footer-left">
     <button class="ds-button">
-      <span class="icon">🔍</span> SEARCH
+      <span class="icon">🔍</span>
     </button>
     <button class="ds-button">
       <span class="icon">📄</span> SELECT
