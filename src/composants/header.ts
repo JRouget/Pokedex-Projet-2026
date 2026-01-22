@@ -18,17 +18,4 @@ class pokeHeader extends HTMLElement {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 window.customElements.define('app-header', pokeHeader)

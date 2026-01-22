@@ -1,44 +1,20 @@
 import { getListPokemons } from './service/specifyAPI'
-
+import { initialiserPagination, genererSelectPages, POKEMONS_PAR_PAGE } from './pagination';
 
 type LitePokemon = { name: string; url: string; };
 
 let fullRepository: LitePokemon[] = [];
-let currentDisplayList: LitePokemon[] = [];
 
-async function affichage () {
-    try {
-        const response = await getListPokemons();
-
-        if (response && response.results) {
-            fullRepository = response.results;
-            currentDisplayList = [...fullRepository];
-
-            console.log("Voici la liste brute :", currentDisplayList);
-
-            if (currentDisplayList.length > 0) {
-                console.log(`Le premier Pokémon est : ${currentDisplayList[0].name}`);
-            }
-        }
-        return currentDisplayList;
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-
-
-export async function chargerPokedex() {
-
-    const data = await getListPokemons();
+function afficherPage(page: number) {
     const container = document.getElementById("pokedex-container");
-
-    const pokemon = affichage();
+    const start = page * POKEMONS_PAR_PAGE;
+    const end = start + POKEMONS_PAR_PAGE;
+    const pokemonsPage = fullRepository.slice(start, end);
     let displayHTML = "";
 
-    data.results.forEach((pokemon, index) => {
+    pokemonsPage.forEach((pokemon) => {
         console.log(pokemon.name);
-        const id = index + 1;
+        const id = fullRepository.indexOf(pokemon) + 1;
         const image = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-vii/icons/${id}.png`;
 
         displayHTML += `
@@ -49,5 +25,27 @@ export async function chargerPokedex() {
         `;
     });
 
-    container.innerHTML = displayHTML;
+    if (container) container.innerHTML = displayHTML;
+}
+
+export async function chargerPokedex() {
+    try {
+        const response = await getListPokemons();
+
+        if (response && response.results) {
+            fullRepository = response.results;
+
+            console.log("Voici la liste brute :", fullRepository);
+
+            if (fullRepository.length > 0) {
+                console.log(`Le premier Pokémon est : ${fullRepository[0].name}`);
+            }
+
+            genererSelectPages(fullRepository.length);
+            initialiserPagination(afficherPage);
+            afficherPage(0);
+        }
+    } catch (error) {
+        console.error(error);
+    }
 }

@@ -12,6 +12,12 @@
     <app-header></app-header>
     <script src="./src/composants/header.ts"></script>
 
+    <div id="pagination-controls" style="display: flex; gap: 10px; justify-content: center; margin: 20px;">
+        <button id="btn-precedent">Précédent</button>
+        <select id="page-select"></select>
+        <button id="btn-suivant">Suivant</button>
+    </div>
+
     <div id="pokedex-container">Chargement des Pokémon...</div>
     <script type="module" src="src/main.ts"></script>
 
