@@ -1,5 +1,3 @@
-
 import chargerPokedex from './pokedex.ts';
 
-chargerPokedex();
-
+chargerPokedex(1);

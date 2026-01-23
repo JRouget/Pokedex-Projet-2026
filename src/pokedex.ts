@@ -25,7 +25,7 @@ function renderList(list: LitePokemon[]) {
     listContainer.innerHTML = displayHTML;
 }
 
-async function chargerPokedex(pageNumber: number) {
+export default async function chargerPokedex(pageNumber: number = 1) {
     const offset = (pageNumber - 1) * pkmPerPage;
     const response = await getListPokemons(pkmPerPage, offset);
     const container = document.getElementById("pokedex-container");
