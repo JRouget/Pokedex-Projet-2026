@@ -12,7 +12,7 @@ function renderList(list: LitePokemon[]) {
     if (!listContainer) return;
 
     let displayHTML = ``;
-    list.forEach((pokemon) => {
+    list.slice(0, pkmPerPage).forEach((pokemon) => {
         const id = pokemon.url.split('/').filter(Boolean).pop();
         const image = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-vii/icons/${id}.png`;
 
