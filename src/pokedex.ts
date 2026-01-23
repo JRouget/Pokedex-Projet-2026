@@ -10,67 +10,9 @@ function renderList(list: LitePokemon[]) {
     const listContainer = document.getElementById("list-cards");
     if (!listContainer) return;
 
-<<<<<<< HEAD
-        if (response && response.results) {
-            fullRepository = response.results;
-            currentList = [...fullRepository];
-
-            console.log("Voici la liste brute :", currentList);
-
-            if (currentList.length > 0) {
-                console.log(`Le premier Pokémon est : ${currentList[0].name}`);
-            }
-        }
-        return currentList;
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-export async function chargerPokedex() {
-
-    const offset = (pageNumber - 1) * pkmPerPage
-    const data = await getListPokemons( pkmPerPage, offset);
-    const container = document.getElementById("pokedex-container");
-
-    let displayHTML = `
-    <footer class="pokedex-footer">
-  
-    <div class="footer-left">
-        <button class="ds-button">
-            <span class="icon">🔍</span>
-            <input type="text" id="search-input" placeholder="SEARCH" style="padding: 0; width: 150px; background:transparent; border:none; color:white; font-family:inherit; font-weight:bold; outline:none; text-transform: uppercase;">
-        </button>
-        <button class="ds-button">
-            <span class="icon">📄</span> TEAM
-        </button>
-    </div>
-
-    <div class="footer-right">
-            <button id="btn-prev" class="nav-arrow">«</button>
-            
-            <span id="page-display"> 1 </span>
-            
-            <button id="btn-next" class="nav-arrow">»</button>
-
-            <a href="../index.html"><span class="nav-cross">✖</span></a>
-            
-            <a href="#" id="btn-back"><span class="nav-return">U</span></a>
-    </div>
-
-  <style>
-  
-</footer>
-`
-
-
-    data?.results.forEach((pokemon, index) => {
-        console.log(pokemon.name);
-        const id = offset + index + 1;
     let displayHTML = ``;
     list.forEach((pokemon) => {
         const id = pokemon.url.split('/').filter(Boolean).pop();
-
         const image = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-vii/icons/${id}.png`;
 
         displayHTML += `
@@ -83,7 +25,7 @@ export async function chargerPokedex() {
     listContainer.innerHTML = displayHTML;
 }
 
-export default async function chargerPokedex(pageNumber: number = 1) {
+export async function chargerPokedex(pageNumber: number = 1) {
     const offset = (pageNumber - 1) * pkmPerPage;
     const response = await getListPokemons(pkmPerPage, offset);
     const container = document.getElementById("pokedex-container");
