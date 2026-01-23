@@ -228,8 +228,6 @@ export async function chargerPokedex() {
 
 </footer>
 `
-
-
     data?.results.forEach((pokemon, index) => {
         console.log(pokemon.name);
         const id = offset + index + 1;
@@ -249,14 +247,14 @@ document.getElementById("btn-prev")?.addEventListener("click", () => { previousP
 document.getElementById("btn-next")?.addEventListener("click", () => { nextPage() })
 }
 
-async function previousPage() {
+export async function previousPage() {
     if (pageNumber > 1) {
         pageNumber = pageNumber - 1;
         await chargerPokedex();
     }
 }
 
-async function nextPage() {
+export async function nextPage() {
     pageNumber = pageNumber + 1;
     await chargerPokedex ();
 }

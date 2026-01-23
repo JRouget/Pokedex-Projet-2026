@@ -1,3 +1,4 @@
+
 class pokeFooter extends HTMLElement {
     constructor() {
         super()
@@ -198,6 +199,5 @@ class pokeFooter extends HTMLElement {
         `
     }
 }
-
 
 window.customElements.define('footer-detail', pokeFooter)
