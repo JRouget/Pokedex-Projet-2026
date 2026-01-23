@@ -1,8 +1,9 @@
-import { getListPokemons } from './service/specifyAPI'
+import {getListPokemons, getPokemon} from './service/specifyAPI'
 
 type LitePokemon = { name: string; url: string; };
 
 let fullRepository: LitePokemon[] = [];
+let globalList: LitePokemon[] = [];
 let currentList: LitePokemon[] = [];
 let pkmPerPage = 20;
 
@@ -25,7 +26,7 @@ function renderList(list: LitePokemon[]) {
     listContainer.innerHTML = displayHTML;
 }
 
-export default async function chargerPokedex(pageNumber: number = 1) {
+export async function chargerPokedex(pageNumber: number = 1) {
     const offset = (pageNumber - 1) * pkmPerPage;
     const response = await getListPokemons(pkmPerPage, offset);
     const container = document.getElementById("pokedex-container");
@@ -55,10 +56,12 @@ export default async function chargerPokedex(pageNumber: number = 1) {
         <div id="list-cards"></div>
         `;
 
-        document.getElementById('search-input')?.addEventListener('input', (e) => {
-            const term = (e.target as HTMLInputElement).value.toLowerCase();
-            currentList = fullRepository.filter(p => p.name.toLowerCase().includes(term));
-            renderList(currentList);
+        document.getElementById('search-input')?.addEventListener('input', async (e) => {
+            const term = (e.target as HTMLInputElement).value;
+            globalList = await getPokemon();
+
+            const results = globalList.filter(p => p.name.includes(term));
+            renderList(results);
         });
     }
 
