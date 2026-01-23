@@ -40,6 +40,7 @@ async function chargerDetails() {
                             <p><strong>Poids :</strong> ${pokemon.weight / 10} kg</p>
                             <p><strong>Taille :</strong> ${pokemon.height / 10} m</p>
                             <button id="btn-shiny" class="btn-shiny">Shiny</button>
+                            <button id="btn-shiny" class="btn-shiny">Ajouter à l'équipe</button>
                         </aside>
                     </div>
                 
@@ -86,4 +87,3 @@ async function chargerDetails() {
 }
 
 chargerDetails();
-
