@@ -1,6 +1,5 @@
 
 import { getListPokemons } from './service/specifyAPI'
-import { initialiserPagination, genererSelectPages, POKEMONS_PAR_PAGE, resetPage } from './pagination';
 
 type LitePokemon = { name: string; url: string; };
 
@@ -18,15 +17,15 @@ async function affichage () {
 
         if (response && response.results) {
             fullRepository = response.results;
-            currentDisplayList = [...fullRepository];
+            currentList = [...fullRepository];
 
-            console.log("Voici la liste brute :", currentDisplayList);
+            console.log("Voici la liste brute :", currentList);
 
-            if (currentDisplayList.length > 0) {
-                console.log(`Le premier Pokémon est : ${currentDisplayList[0].name}`);
+            if (currentList.length > 0) {
+                console.log(`Le premier Pokémon est : ${currentList[0].name}`);
             }
         }
-        return currentDisplayList;
+        return currentList;
     } catch (error) {
         console.error(error);
     }
@@ -73,3 +72,4 @@ async function nextPage() {
     pageNumber = pageNumber + 1;
     await chargerPokedex ();
 }
+
