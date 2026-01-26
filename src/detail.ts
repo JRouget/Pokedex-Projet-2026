@@ -1,6 +1,11 @@
-let tableauEquipe1: number[] = [];
-let tableauEquipe2: number[] = [];
-let tableauEquipe3: number[] = [];
+function chargerEquipe(nom: string): number[] {
+    const data = localStorage.getItem(nom);
+    return data ? JSON.parse(data) : [];
+}
+
+let tableauEquipe1: number[] = chargerEquipe("equipe1");
+let tableauEquipe2: number[] = chargerEquipe("equipe2");
+let tableauEquipe3: number[] = chargerEquipe("equipe3");
 
 async function chargerDetails() {
 
@@ -18,7 +23,11 @@ async function chargerDetails() {
 
         const container = document.getElementById("pokemon-detail");
 
-        const types = pokemon.types.map(t => t.type.name).join(', ');
+        if (!container) {
+            return;
+        }
+
+        const types = pokemon.types.map((t: { type: { name: any; }; }) => t.type.name).join(', ');
 
         const bio = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
         const bioData = await bio.json();
@@ -55,7 +64,7 @@ async function chargerDetails() {
 
                 <article class="pokemon-bio">
                     <h2 class="bio-title">Biographie</h2>
-                    <p>${bioData.flavor_text_entries.find(entry => entry.language.name === "fr").flavor_text.replace(/\n|\f/g, ' ')}</p>
+                    <p>${bioData.flavor_text_entries.find((entry: { language: { name: string; }; }) => entry.language.name === "fr").flavor_text.replace(/\n|\f/g, ' ')}</p>
                 </article>
             </div>
         `;
@@ -84,11 +93,21 @@ async function chargerDetails() {
         btnEquipe?.addEventListener("click", () => {
 
             const choix = selectEquipe.value;
-            let tableauEquipe;
+            let tableauEquipe: number [] = [];
+            let nom = "";
 
-            if (choix == "1") tableauEquipe = tableauEquipe1;
-            if (choix == "2") tableauEquipe = tableauEquipe2;
-            if (choix == "3") tableauEquipe = tableauEquipe3;
+            if (choix == "1") {
+                tableauEquipe = tableauEquipe1;
+                nom = "equipe 1"
+            }
+            if (choix == "2") {
+                tableauEquipe = tableauEquipe2;
+                nom = "equipe 2"
+            }
+            if (choix == "3") {
+                tableauEquipe = tableauEquipe3;
+                nom = "equipe 3"
+            }
 
             if (tableauEquipe.length >= 6) {
                 alert("Cette équipe est déjà complète");
@@ -96,7 +115,15 @@ async function chargerDetails() {
             }
 
             tableauEquipe.push(pokemon.id);
-            alert(`Pokémon ajouté à l'équipe ${choix}`);
+            alert(`Pokémon ajouté à l'${nom} ${choix}`);
+
+            localStorage.setItem(nom, JSON.stringify(tableauEquipe1))
+            localStorage.setItem(nom, JSON.stringify(tableauEquipe2))
+            localStorage.setItem(nom, JSON.stringify(tableauEquipe3))
+
+            console.log(tableauEquipe1);
+            console.log(tableauEquipe2);
+            console.log(tableauEquipe3);
         });
 
     } catch (error) {
