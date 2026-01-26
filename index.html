@@ -1,33 +1,42 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokédex OS - Initialisation</title>
+    <title>Pokédex OS</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style/index-style.css">
+    <link rel="stylesheet" href="style/card-style.css">
+    <link rel="stylesheet" href="style/pokedex-style.css">
 </head>
-
 <body>
 
-    <div class="video-background">
-        <video autoplay muted loop disablepictureinpicture playsinline id="bgVideo">
-            <source src="src/video/intro.mp4" type="video/mp4">
-            Votre navigateur ne supporte pas la vidéo HTML5.
-        </video>
+    <div id="scene-intro" class="scene active">
+        <div class="video-background">
+            <video autoplay muted loop disablepictureinpicture playsinline id="bgVideo">
+                <source src="src/video/intro.mp4" type="video/mp4">
+            </video>
+        </div>
+        <div class="scanlines"></div>
+        <div class="overlay">
+            <div class="system-status">POKÉDEX OS</div>
+            <div class="press-start" id="startBtn">> APPUYEZ SUR ENTRÉE <</div>
+        </div>
     </div>
 
-    <div class="scanlines"></div>
+    <div id="scene-liste" class="scene">
+        <app-header></app-header> 
+        <div id="pokedex-container">Chargement...</div>
+    </div>
 
-    <div class="overlay">
-        <div class="system-status">POKÉDEX OS</div>
-        <div class="press-start" id="startBtn">
-            > APPUYEZ SUR ENTRÉE < </div>
-        </div>
+    <div id="scene-detail" class="scene">
+        <div id="pokemon-detail" class="detail-container">Chargement...</div>
+        <script src="src/detail.ts"></script>
+        <div id="detail-footer-container"></div>
+    </div>
 
-        <script src="src/index.ts"></script>
-        
+
+    <script type="module" src="src/main.ts"></script>
 </body>
-
 </html>

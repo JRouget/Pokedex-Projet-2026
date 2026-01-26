@@ -20,7 +20,7 @@ class pokeFooter extends HTMLElement {
             <span class="tab-text">EVOLUTIONS</span>
         </button>
         <button class="tech-tab">
-            <span class="tab-text">FORMES</span>
+            <span class="tab-text">STATS</span>
         </button>
     </div>
 

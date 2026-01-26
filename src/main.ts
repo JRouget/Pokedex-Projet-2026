@@ -1,3 +1,6 @@
-import {chargerPokedex} from './pokedex.ts';
+import { initIntro } from './index.ts';
 
-chargerPokedex(1);
+
+document.addEventListener("DOMContentLoaded", () => {
+    initIntro();
+});
