@@ -1,6 +1,6 @@
-let tableauEquipe1: number[] = [];
-let tableauEquipe2: number[] = [];
-let tableauEquipe3: number[] = [];
+let tableauEquipe1: number[] = JSON.parse(localStorage.getItem('team1') ?? "[]");;
+let tableauEquipe2: number[] = JSON.parse(localStorage.getItem('team2') ?? "[]");;
+let tableauEquipe3: number[] = JSON.parse(localStorage.getItem('team3') ?? "[]");;
 
 async function chargerDetails() {
 
@@ -84,7 +84,7 @@ async function chargerDetails() {
         btnEquipe?.addEventListener("click", () => {
 
             const choix = selectEquipe.value;
-            let tableauEquipe;
+            let tableauEquipe: number [] = [];
 
             if (choix == "1") tableauEquipe = tableauEquipe1;
             if (choix == "2") tableauEquipe = tableauEquipe2;
@@ -97,6 +97,17 @@ async function chargerDetails() {
 
             tableauEquipe.push(pokemon.id);
             alert(`Pokémon ajouté à l'équipe ${choix}`);
+
+            localStorage.setItem('team1', JSON.stringify(tableauEquipe1));
+            
+            console.log(tableauEquipe1);
+
+            localStorage.setItem('team2', JSON.stringify(tableauEquipe2));
+           
+            console.log(tableauEquipe2);
+
+            localStorage.setItem('team3', JSON.stringify(tableauEquipe3));
+            console.log(tableauEquipe3);
         });
 
     } catch (error) {

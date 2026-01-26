@@ -1,4 +1,5 @@
 import {getListPokemons, getPokemon} from './service/specifyAPI'
+//import {chargerDetails} from './detail'
 
 type LitePokemon = { name: string; url: string; };
 
@@ -91,3 +92,7 @@ async function previousPage(pageNumber: number) {
 async function nextPage(pageNumber: number) {
     await chargerPokedex(pageNumber + 1);
 }
+
+//async function teamPokedex(){
+  //  await chargerDetails;
+//}
