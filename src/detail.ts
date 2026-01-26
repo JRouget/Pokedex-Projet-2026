@@ -1,6 +1,5 @@
 import { changerScene } from './router.ts';
 
-
 function chargerEquipe(nom: string): number[] {
     const data = localStorage.getItem(nom);
     return data ? JSON.parse(data) : [];
@@ -12,35 +11,25 @@ let tableauEquipe3: number[] = chargerEquipe("equipe3");
 
 
 export async function chargerDetails(id: number) {
-
-
     if (!id) {
         changerScene("scene-liste");
         return;
     }
 
     try {
-
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
         const pokemon = await response.json();
 
         const bioResponse = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
         const bioData = await bioResponse.json();
 
-
         const container = document.getElementById("pokemon-detail");
-        const footerContainer = document.getElementById("detail-footer-container"); // Il faut cibler le div créé dans index.html
-
-        if (!container || !footerContainer) return;
-
+        if (!container) return;
 
         const types = pokemon.types.map((t: any) => t.type.name).join(', ');
-
         const description = bioData.flavor_text_entries.find((entry: any) => entry.language.name === "fr")?.flavor_text.replace(/\n|\f/g, ' ') || "Pas de description.";
-
         const spriteNormal = pokemon.sprites.front_default;
         const spriteShiny = pokemon.sprites.front_shiny;
-
 
         container.innerHTML = `
             <div class="details-container" style="padding-bottom: 60px;">
@@ -77,11 +66,63 @@ export async function chargerDetails(id: number) {
             </div>
         `;
 
+        let isShiny = false;
+        const imgEl = document.getElementById("img-pokemon-detail") as HTMLImageElement;
 
-        footerContainer.innerHTML = `
+        document.getElementById("btn-toggle-shiny")?.addEventListener("click", () => {
+            isShiny = !isShiny;
+            imgEl.src = isShiny ? spriteShiny : spriteNormal;
+        });
+
+        document.getElementById("btn-cri")?.addEventListener("click", () => {
+            if(pokemon.cries.latest) {
+                const audio = new Audio(pokemon.cries.latest);
+                audio.volume = 0.5;
+                audio.play();
+            }
+        });
+
+        document.getElementById("btn-equipe")?.addEventListener("click", () => {
+            const select = document.getElementById("select-equipe") as HTMLSelectElement;
+            const choix = select.value;
+
+            let targetArray = choix === "1" ? tableauEquipe1 : choix === "2" ? tableauEquipe2 : tableauEquipe3;
+            let storageKey = choix === "1" ? "equipe1" : choix === "2" ? "equipe2" : "equipe3";
+
+            if (targetArray.length >= 6) {
+                alert("Cette équipe est déjà complète !");
+                return;
+            }
+
+            if (targetArray.includes(pokemon.id)) {
+                alert("Ce Pokémon est déjà dans l'équipe !");
+                return;
+            }
+
+            targetArray.push(pokemon.id);
+            localStorage.setItem(storageKey, JSON.stringify(targetArray));
+
+            alert(`Pokémon ajouté à l'équipe ${choix}`);
+            console.log(`Equipe ${choix} :`, targetArray);
+        });
+
+        afficherPagination(id);
+
+    } catch (error) {
+        console.error("Erreur chargement détail:", error);
+    }
+}
+
+
+function afficherPagination(currentId: number) {
+    const footerContainer = document.getElementById("detail-footer-container");
+
+    if (!footerContainer) return;
+
+    footerContainer.innerHTML = `
         <footer class="detail-footer" style="background: linear-gradient(to bottom, #2a2a2a 0%, #000 100%); border-top: 4px solid #555; height: 48px; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; font-family: 'Chakra Petch', sans-serif; position: fixed; bottom: 0; left: 0; width: 100%; z-index: 1000;">
             <div style="display: flex; gap: 10px;">
-                <button id="btn-detail-prev" style="background:none; border:none; color:#666; font-size:28px; font-weight:900; cursor:pointer;">«</button>
+                <button id="btn-detail-prev" style="background:none; border:none; color:#666; font-size:28px; font-weight:900; cursor:pointer; ${currentId <= 1 ? 'opacity:0.3; cursor:default;' : ''}">«</button>
             </div>
 
             <div style="display: flex; gap: 2px;">
@@ -101,61 +142,19 @@ export async function chargerDetails(id: number) {
                 </button>
             </div>
         </footer>
-        `;
+    `;
 
+    document.getElementById("btn-detail-prev")?.addEventListener("click", () => {
+        if (currentId > 1) {
+            chargerDetails(currentId - 1);
+        }
+    });
 
-        let isShiny = false;
-        const imgEl = document.getElementById("img-pokemon-detail") as HTMLImageElement;
-        document.getElementById("btn-toggle-shiny")?.addEventListener("click", () => {
-            isShiny = !isShiny;
-            imgEl.src = isShiny ? spriteShiny : spriteNormal;
-        });
+    document.getElementById("btn-detail-next")?.addEventListener("click", () => {
+        chargerDetails(currentId + 1);
+    });
 
-
-        document.getElementById("btn-cri")?.addEventListener("click", () => {
-            if(pokemon.cries.latest) {
-                const audio = new Audio(pokemon.cries.latest);
-                audio.volume = 0.5;
-                audio.play();
-            }
-        });
-
-
-        document.getElementById("btn-equipe")?.addEventListener("click", () => {
-            const select = document.getElementById("select-equipe") as HTMLSelectElement;
-            const choix = select.value;
-
-
-            let targetArray = choix === "1" ? tableauEquipe1 : choix === "2" ? tableauEquipe2 : tableauEquipe3;
-            let storageKey = choix === "1" ? "equipe1" : choix === "2" ? "equipe2" : "equipe3";
-
-            if (targetArray.length >= 6) {
-                alert("Cette équipe est déjà complète !");
-                return;
-            }
-
-            targetArray.push(pokemon.id);
-            localStorage.setItem(storageKey, JSON.stringify(targetArray));
-
-            alert(`Pokémon ajouté à l'équipe ${choix}`);
-            console.log(`Equipe ${choix} :`, targetArray);
-        });
-
-
-        document.getElementById("btn-detail-prev")?.addEventListener("click", () => {
-            if (id > 1) chargerDetails(id - 1);
-        });
-
-        document.getElementById("btn-detail-next")?.addEventListener("click", () => {
-            chargerDetails(id + 1);
-        });
-
-        document.getElementById("btn-detail-esc")?.addEventListener("click", () => {
-            changerScene("scene-liste");
-        });
-
-    } catch (error) {
-        console.error("Erreur chargement détail:", error);
-    }
+    document.getElementById("btn-detail-esc")?.addEventListener("click", () => {
+        changerScene("scene-liste");
+    });
 }
-
