@@ -35,7 +35,7 @@ export async function chargerDetails(id: number) {
             <div class="details-container" style="padding-bottom: 60px;">
                 <div class="pokemon-imgStats">
                     <article class="pokemon-image">
-                        <button id="btn-cri" class="ds-button" style="margin-bottom:10px;">
+                        <button id="btn-cri" class="btn-cri" style="margin-bottom:10px;">
                             <img id="img-pokemon-detail" src="${spriteNormal}" alt="${pokemon.name}" style="width:200px;">
                         </button>
                     </article>
@@ -57,6 +57,8 @@ export async function chargerDetails(id: number) {
                             </select>
                             <button id="btn-equipe" class="btn-shiny">Ajouter à l'équipe</button>
                             <button id="btn-toggle-shiny" style="background:none; border:none; cursor:pointer;" title="Clique pour changer !">
+                            Shiny
+                            </button>
                         </div>
                     </aside>
                 </div>

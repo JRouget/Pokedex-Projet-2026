@@ -84,41 +84,6 @@ body {
     padding-left: 5px;
 }
 
-.ds-button {
-    background-color: #222;
-    color: #ccc;
-    border: none;
-    padding: 5px 10px 5px 15px;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    text-transform: uppercase;
-    font-family: inherit;
-    position: relative;
-    clip-path: polygon(10px 0,
-            100% 0,
-            100% 100%,
-            10px 100%,
-            0 50%);
-    filter: drop-shadow(1px 1px 0px #777) drop-shadow(-1px -1px 0px #777);
-    margin-left: 5px;
-    transition: transform 0.1s, background-color 0.2s;
-}
-
-.ds-button:hover {
-    background-color: #333;
-    color: white;
-    transform: scale(1.05);
-}
-
-.ds-button .icon {
-    font-size: 12px;
-    opacity: 0.7;
-}
-
 #search-input::placeholder {
     color: #777;
     font-size: 12px;
