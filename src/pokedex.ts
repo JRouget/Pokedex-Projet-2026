@@ -1,30 +1,44 @@
-import {getListPokemons, getPokemon} from './service/specifyAPI'
-//import {chargerDetails} from './detail'
+
+import { getListPokemons, getPokemon } from './service/specifyAPI.ts'; // Vérifie le chemin
+import { changerScene } from './router.ts';
+import { chargerDetails } from './detail.ts';
 
 type LitePokemon = { name: string; url: string; };
 
-let fullRepository: LitePokemon[] = [];
-let globalList: LitePokemon[] = [];
-let currentList: LitePokemon[] = [];
 let pkmPerPage = 20;
+let globalList: LitePokemon[] = [];
+
 
 function renderList(list: LitePokemon[]) {
     const listContainer = document.getElementById("list-cards");
     if (!listContainer) return;
 
-    let displayHTML = ``;
+    listContainer.innerHTML = ""; 
+
+    
     list.slice(0, pkmPerPage).forEach((pokemon) => {
-        const id = pokemon.url.split('/').filter(Boolean).pop();
+        const id = pokemon.url.split('/').filter(Boolean).pop(); 
         const image = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-vii/icons/${id}.png`;
 
-        displayHTML += `
-                <a href="../html/detail.html?id=${id}"><div class="carte">
-                    <img src="${image}" alt="${pokemon.name}">
-                    <h3>${pokemon.name}</h3>
-                </div></a>
-            `;
+        
+        const card = document.createElement('div');
+        card.className = 'carte';
+        card.style.cursor = 'pointer'; 
+        card.innerHTML = `
+            <img src="${image}" alt="${pokemon.name}">
+            <h3>${pokemon.name}</h3>
+        `;
+
+        
+        card.addEventListener('click', () => {
+            if (id) {
+                changerScene("scene-detail");
+                chargerDetails(parseInt(id)); 
+            }
+        });
+
+        listContainer.appendChild(card);
     });
-    listContainer.innerHTML = displayHTML;
 }
 
 export async function chargerPokedex(pageNumber: number = 1) {
@@ -34,52 +48,63 @@ export async function chargerPokedex(pageNumber: number = 1) {
 
     if (!container) return;
 
+    
     if (!document.getElementById("search-input")) {
         container.innerHTML = `
+        <div id="list-cards" style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px; padding-bottom:60px;"></div>
+        
         <footer class="pokedex-footer">
             <div class="footer-left">
                 <button class="ds-button">
                     <span class="icon">🔍</span>
-                    <input type="text" id="search-input" placeholder="SEARCH"">
-                </button>
-                <button class="ds-button">
-                    <span class="icon">📄</span> TEAM
+                    <input type="text" id="search-input" placeholder="SEARCH">
                 </button>
             </div>
             <div class="footer-right">
-                    <button id="btn-prev" class="nav-arrow">«</button>
+                    <button id="btn-prev-list" class="nav-arrow">«</button>
                     <span id="page-display"> 1 </span>
-                    <button id="btn-next" class="nav-arrow">»</button>
-                    <a href="../index.html"><span class="nav-cross">✖</span></a>
-                    <a href="#" id="btn-back"><span class="nav-return">U</span></a>
+                    <button id="btn-next-list" class="nav-arrow">»</button>
+                    <span id="btn-back-intro" class="nav-cross" style="cursor:pointer;">✖</span>
             </div>
         </footer>
-        <div id="list-cards"></div>
         `;
 
+        
         document.getElementById('search-input')?.addEventListener('input', async (e) => {
             const term = (e.target as HTMLInputElement).value;
-            globalList = await getPokemon();
-
+            if(!globalList.length) globalList = await getPokemon(); // Charge tout si pas fait
             const results = globalList.filter(p => p.name.includes(term));
             renderList(results);
+        });
+
+
+        document.getElementById('btn-back-intro')?.addEventListener('click', () => {
+            changerScene("scene-intro");
         });
     }
 
     if (response && response.results) {
-        fullRepository = response.results;
-        currentList = fullRepository;
+        renderList(response.results);
 
-        renderList(currentList);
 
         const pageDisplay = document.getElementById("page-display");
         if (pageDisplay) pageDisplay.innerText = pageNumber.toString();
 
-        const btnPrev = document.getElementById("btn-prev");
-        if (btnPrev) btnPrev.onclick = () => { previousPage(pageNumber) };
 
-        const btnNext = document.getElementById("btn-next");
-        if (btnNext) btnNext.onclick = () => { nextPage(pageNumber) };
+        const btnPrev = document.getElementById("btn-prev-list");
+        const btnNext = document.getElementById("btn-next-list");
+        
+        if (btnPrev) {
+            const newBtn = btnPrev.cloneNode(true);
+            btnPrev.parentNode?.replaceChild(newBtn, btnPrev);
+            newBtn.addEventListener('click', () => chargerPokedex(pageNumber > 1 ? pageNumber - 1 : 1));
+        }
+        
+        if (btnNext) {
+            const newBtn = btnNext.cloneNode(true);
+            btnNext.parentNode?.replaceChild(newBtn, btnNext);
+            newBtn.addEventListener('click', () => chargerPokedex(pageNumber + 1));
+        }
     }
 }
 
@@ -96,3 +121,4 @@ async function nextPage(pageNumber: number) {
 //async function teamPokedex(){
   //  await chargerDetails;
 //}
+

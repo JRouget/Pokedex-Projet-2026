@@ -9,13 +9,6 @@ a {
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: black;
-    background-image:
-        radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.3) 2px, transparent 2.5px),
-        linear-gradient(rgba(128, 128, 128, 0.2) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(128, 128, 128, 0.2) 1px, transparent 1px),
-        linear-gradient(to bottom, #000000 0%, #111c2e 100%);
-    background-size: 100px 100px, 100px 100px, 100px 100px, cover;
-    background-attachment: fixed;
     text-align: center;
 }
 
