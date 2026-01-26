@@ -1,3 +1,4 @@
+
 import { getListPokemons, getPokemon } from './service/specifyAPI.ts'; // Vérifie le chemin
 import { changerScene } from './router.ts';
 import { chargerDetails } from './detail.ts';
@@ -106,3 +107,18 @@ export async function chargerPokedex(pageNumber: number = 1) {
         }
     }
 }
+
+async function previousPage(pageNumber: number) {
+    if (pageNumber > 1) {
+        await chargerPokedex(pageNumber - 1);
+    }
+}
+
+async function nextPage(pageNumber: number) {
+    await chargerPokedex(pageNumber + 1);
+}
+
+//async function teamPokedex(){
+  //  await chargerDetails;
+//}
+

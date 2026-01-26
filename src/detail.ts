@@ -1,25 +1,33 @@
-import { changerScene } from './router.ts';
+function chargerEquipe(nom: string): number[] {
+    const data = localStorage.getItem(nom);
+    return data ? JSON.parse(data) : [];
+}
+let tableauEquipe1: number[] = chargerEquipe("equipe1");
+let tableauEquipe2: number[] = chargerEquipe("equipe2");
+let tableauEquipe3: number[] = chargerEquipe("equipe3");
 
-let tableauEquipe1: number[] = [];
-let tableauEquipe2: number[] = [];
-let tableauEquipe3: number[] = [];
+export async function chargerDetails() {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+    if (!id) {
+        window.location.href = "index.html";
+        return;
+    }
 
-export async function chargerDetails(id: number) {
     try {
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
         const pokemon = await response.json();
 
         const bioResponse = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
         const bioData = await bioResponse.json();
-        const description = bioData.flavor_text_entries.find((entry: any) => entry.language.name === "fr")?.flavor_text.replace(/\n|\f/g, ' ') || "Pas de description.";
 
         const container = document.getElementById("pokemon-detail");
-        const footerContainer = document.getElementById("detail-footer-container");
 
-        if (!container || !footerContainer) return;
+        if (!container) {
+            return;
+        }
+        const types = pokemon.types.map((t: { type: { name: any; }; }) => t.type.name).join(', ');
 
-
-        const types = pokemon.types.map((t: any) => t.type.name).join(', ');
         const spriteNormal = pokemon.sprites.front_default;
         const spriteShiny = pokemon.sprites.front_shiny;
 
@@ -31,34 +39,32 @@ export async function chargerDetails(id: number) {
                             <img id="img-pokemon-detail" src="${spriteNormal}" alt="${pokemon.name}" style="width:200px;">
                         </button>
                     </article>
-
+                    
                     <aside class="pokemon-info">
                         <h1 class="info-title">${pokemon.name.toUpperCase()}</h1>
                         <p><strong>N° :</strong> ${pokemon.id}</p>
                         <p><strong>Types :</strong> ${types}</p>
                         <p><strong>Poids :</strong> ${pokemon.weight / 10} kg</p>
                         <p><strong>Taille :</strong> ${pokemon.height / 10} m</p>
-                        
-                        <button id="btn-cri" class="ds-button">🔊 Cri</button>
-                        
-                        <div style="margin-top:10px;">
-                            <select id="select-equipe">
-                                <option value="1">Equipe 1</option>
-                                <option value="2">Equipe 2</option>
-                                <option value="3">Equipe 3</option>
-                            </select>
-                            <button id="btn-equipe">Ajouter</button>
-                        </div>
+
+                        <button id="btn-shiny" class="btn-shiny">Shiny</button>
+                        <select id="select-equipe" class="btn-shiny">
+                            <option value="1">Equipe 1</option>
+                            <option value="2">Equipe 2</option>
+                            <option value="3">Equipe 3</option>
+                        </select>
+                        <button id="btn-equipe" class="btn-shiny">Ajouter à l'équipe</button>
                     </aside>
                 </div>
-                <article class="pokemon-bio" style="margin-top:20px; border:1px solid #333; padding:10px;">
-                    <h3>Biographie</h3>
-                    <p>${description}</p>
+                <article class="pokemon-bio">
+                <h2 class="bio-title">Biographie</h2>
+                <p>${bioData.flavor_text_entries.find((entry: { language: { name: string; }; }) => entry.language.name === "fr").flavor_text.replace(/\n|\f/g, ' ')}</p>
                 </article>
             </div>
-        `;
+            `;
+        const btnShiny = document.getElementById("btn-shiny");
+        const imgPokemon = document.getElementById("img-pokemon") as HTMLImageElement;
 
-        
         let isShiny = false;
         const imgEl = document.getElementById("img-pokemon-detail") as HTMLImageElement;
         document.getElementById("btn-toggle-shiny")?.addEventListener("click", () => {
@@ -121,7 +127,51 @@ export async function chargerDetails(id: number) {
             changerScene("scene-liste"); 
         });
 
+        const boutonCri = document.getElementById("play-cri");
+        const cries = pokemon.cries.latest;
+
+        boutonCri?.addEventListener("click", () => {
+            const audio = new Audio(cries);
+            audio.play();
+        });
+        const btnEquipe = document.getElementById("btn-equipe");
+        const selectEquipe = document.getElementById("select-equipe") as HTMLSelectElement;
+        btnEquipe?.addEventListener("click", () => {
+            const choix = selectEquipe.value;
+            let tableauEquipe: number [] = [];
+
+            if (choix == "1") {
+                tableauEquipe = tableauEquipe1;
+            }
+            if (choix == "2") {
+                tableauEquipe = tableauEquipe2;
+            }
+            if (choix == "3") {
+                tableauEquipe = tableauEquipe3;
+            }
+            if (tableauEquipe.length >= 6) {
+                alert("Cette équipe est déjà complète");
+                return;
+            }
+            tableauEquipe.push(pokemon.id);
+
+
+            alert(`Pokémon ajouté à l'équipe ${choix}`);
+
+            localStorage.setItem('team1', JSON.stringify(tableauEquipe1));
+            console.log(tableauEquipe1);
+
+            localStorage.setItem('team2', JSON.stringify(tableauEquipe2));
+            console.log(tableauEquipe2);
+
+            localStorage.setItem('team3', JSON.stringify(tableauEquipe3));
+            console.log(tableauEquipe3);
+        });
     } catch (error) {
         console.error(error);
     }
+
 }
+
+chargerDetails(); 
+
