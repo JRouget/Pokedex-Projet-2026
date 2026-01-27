@@ -1,4 +1,3 @@
-
 import { getListPokemons, getPokemon } from './service/specifyAPI.ts'; // Vérifie le chemin
 import { changerScene } from './router.ts';
 import { chargerDetails } from './detail.ts';
