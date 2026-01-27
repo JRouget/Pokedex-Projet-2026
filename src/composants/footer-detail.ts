@@ -1,4 +1,6 @@
-export class pokeFooter extends HTMLElement {
+import { chargerDetails } from "../detail";
+
+class pokeFooter extends HTMLElement {
     constructor() {
         super()
         const shadow = this.attachShadow({ mode: 'open' })
@@ -23,7 +25,10 @@ export class pokeFooter extends HTMLElement {
         <button class="tech-tab">
             <span class="tab-text">STATS</span>
         </button>
-        <button class="tech-tab">
+    </div>
+
+    <div>
+    <button class="tech-tab">
             <span class="tab-text">TEAM</span>
         </button>
     </div>
@@ -47,12 +52,19 @@ export class pokeFooter extends HTMLElement {
 
         shadow.getElementById("btn-prev")?.addEventListener("click", () => {
             if (currentId > 1) {
-                window.location.href = `?id=${currentId - 1}`
+                history.pushState({id: currentId-1}, '', `${window.location.origin}?id=${currentId - 1}`)
+            chargerDetails(currentId - 1)
             }
         })
 
         shadow.getElementById("btn-next")?.addEventListener("click", () => {
-            window.location.href = `?id=${currentId + 1}`
+        //    window.location.href = `?id=${currentId + 1}`
+           history.pushState({id: currentId+1}, '', `${window.location.origin}?id=${currentId + 1}`)
+            chargerDetails(currentId + 1)
+        })
+
+        shadow.getElementById("btn-team")?.addEventListener("click", ()=> {
+            this.dispatchEvent(new CustomEvent("team-click", {bubbles: true}));
         })
     }
 }
