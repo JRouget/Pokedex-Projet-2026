@@ -105,6 +105,8 @@ export async function chargerDetails(id: number) {
 
             localStorage.setItem('team3', JSON.stringify(tableauEquipe3));
             console.log(tableauEquipe3);
+
+            afficherPanelEquipe();
         });
         afficherPagination(id)
     } catch (error) {
@@ -112,6 +114,37 @@ export async function chargerDetails(id: number) {
     }
 }
 
+function afficherPanelEquipe(){
+    const panel = document.getElementById("team-panel");
+    if (!panel) return;
+
+    panel.innerHTML = `
+    <h2 class="team-title">Equipes</h2>
+    <div class="team-list">
+        <h3>Equipe 1</h3>
+        <p>${tableauEquipe1.length ? tableauEquipe1.map(id=> `<span>#${id}</span>`).join(""): "Vide"}</p>
+    </div>
+    <div class="team-list">
+        <h3>Equipe 2</h3>
+        <p>${tableauEquipe2.length ? tableauEquipe2.map(id=> `<span>#${id}</span>`).join(""): "Vide"}</p>
+    </div>
+    <div class="team-list">
+        <h3>Equipe 3</h3>
+        <p>${tableauEquipe3.length ? tableauEquipe3.map(id=> `<span>#${id}</span>`).join(""): "Vide"}</p>
+    </div>
+    <button id="close-team-panel" class="btn-shinny">Fermer</button>
+    `;
+
+    panel.classList.remove("hidden");
+    panel.classList.add("visible");
+
+    document.getElementById("close-team-panel")?.addEventListener("click", ()=> {
+        panel.classList.remove("visible");
+        panel.classList.add("hidden");
+    });
+    
+    }
+    window.afficherPanelEquipe = afficherPanelEquipe;
 
 function afficherPagination(currentId: number) {
     const footerContainer = document.getElementById("detail-footer-container");
@@ -123,6 +156,11 @@ function afficherPagination(currentId: number) {
             <div style="display: flex; gap: 10px;">
                 <button id="btn-detail-prev" style="background:none; border:none; color:#666; font-size:28px; font-weight:900; cursor:pointer; ${currentId <= 1 ? 'opacity:0.3; cursor:default;' : ''}">«</button>
             </div>
+
+            <button id="btn-team" style="background:#1a1a1a; border:1px solid #444; color:white; padding:4px 8px; cursor:pointer;">
+                TEAM
+            </button>
+
 
             <div style="display: flex; gap: 10px; align-items:center;">
                 <button id="btn-detail-next" style="background:none; border:none; color:#666; font-size:28px; font-weight:900; cursor:pointer;">»</button>
@@ -147,4 +185,8 @@ function afficherPagination(currentId: number) {
     document.getElementById("btn-detail-esc")?.addEventListener("click", () => {
         changerScene("scene-liste");
     });
+
+    document.getElementById("btn-team")?.addEventListener("click", ()=>{
+        afficherPanelEquipe();
+    })
 }

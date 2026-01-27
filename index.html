@@ -33,10 +33,19 @@
     <div id="scene-detail" class="scene">
         <div id="pokemon-detail" class="detail-container">Chargement...</div>
         <script src="src/detail.ts"></script>
-        <footer-detail></footer-detail>
+        <div id="team-panel" class="team-panel hidden"></div>
         <script src="src/composants/footer-detail.ts"></script>
-    </div>
+    <footer-detail></footer-detail>
+    <script>
+    document.addEventListener("team-click", () => {
+        if (window.afficherPanelEquipe) {
+            window.afficherPanelEquipe();
+        }
+    });
+</script>
 
+
+    </div>
 
     <script type="module" src="src/main.ts"></script>
 </body>

@@ -22,7 +22,10 @@ class pokeFooter extends HTMLElement {
         <button class="tech-tab">
             <span class="tab-text">STATS</span>
         </button>
-        <button class="tech-tab">
+    </div>
+
+    <div>
+    <button class="tech-tab">
             <span class="tab-text">TEAM</span>
         </button>
     </div>
@@ -204,6 +207,10 @@ class pokeFooter extends HTMLElement {
 
         shadow.getElementById("btn-next")?.addEventListener("click", () => {
             window.location.href = `?id=${currentId + 1}`
+        })
+
+        shadow.getElementById("btn-team")?.addEventListener("click", ()=> {
+            this.dispatchEvent(new CustomEvent("team-click", {bubbles: true}));
         })
     }
 }
