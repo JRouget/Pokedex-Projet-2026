@@ -22,6 +22,9 @@ class pokeFooter extends HTMLElement {
         <button class="tech-tab">
             <span class="tab-text">STATS</span>
         </button>
+        <button class="tech-tab">
+            <span class="tab-text">TEAM</span>
+        </button>
     </div>
 
     <div class="right-controls">

@@ -12,31 +12,29 @@ let tableauEquipe3: number[] = chargerEquipe("equipe3");
 
 export async function chargerDetails(id: number) {
     if (!id) {
-        changerScene("scene-liste");
+        window.location.href = "index.html";
         return;
     }
-
     try {
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
         const pokemon = await response.json();
 
-        const bioResponse = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
-        const bioData = await bioResponse.json();
-
         const container = document.getElementById("pokemon-detail");
-        if (!container) return;
-
-        const types = pokemon.types.map((t: any) => t.type.name).join(', ');
-        const description = bioData.flavor_text_entries.find((entry: any) => entry.language.name === "fr")?.flavor_text.replace(/\n|\f/g, ' ') || "Pas de description.";
+        if (!container) {
+            return;
+        }
+        const types = pokemon.types.map((t: { type: { name: any; }; }) => t.type.name).join(', ');
+        const bio = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
+        const bioData = await bio.json();
         const spriteNormal = pokemon.sprites.front_default;
         const spriteShiny = pokemon.sprites.front_shiny;
 
         container.innerHTML = `
-            <div class="details-container" style="padding-bottom: 60px;">
+            <div class="details-container">
                 <div class="pokemon-imgStats">
                     <article class="pokemon-image">
-                        <button id="btn-toggle-shiny" style="background:none; border:none; cursor:pointer;" title="Clique pour changer !">
-                            <img id="img-pokemon-detail" src="${spriteNormal}" alt="${pokemon.name}" style="width:200px;">
+                        <button id="play-cri" class="btn-cri">
+                            <img id="img-pokemon" src="${spriteNormal}" alt="${pokemon.name}">
                         </button>
                     </article>
                     
@@ -46,70 +44,71 @@ export async function chargerDetails(id: number) {
                         <p><strong>Types :</strong> ${types}</p>
                         <p><strong>Poids :</strong> ${pokemon.weight / 10} kg</p>
                         <p><strong>Taille :</strong> ${pokemon.height / 10} m</p>
-
-                        <button id="btn-cri" class="ds-button" style="margin-bottom:10px;">🔊 Cri</button>
-                        
-                        <div class="team-selector">
-                            <select id="select-equipe" class="btn-shiny">
-                                <option value="1">Equipe 1</option>
-                                <option value="2">Equipe 2</option>
-                                <option value="3">Equipe 3</option>
-                            </select>
-                            <button id="btn-equipe" class="btn-shiny">Ajouter à l'équipe</button>
-                        </div>
+                        <button id="btn-shiny" class="btn-shiny">Shiny</button>
+                        <select id="select-equipe" class="btn-shiny">
+                            <option value="1">Equipe 1</option>
+                            <option value="2">Equipe 2</option>
+                            <option value="3">Equipe 3</option>
+                        </select>
+                        <button id="btn-equipe" class="btn-shiny">Ajouter à l'équipe</button>
                     </aside>
                 </div>
                 <article class="pokemon-bio">
-                    <h2 class="bio-title">Biographie</h2>
-                    <p>${description}</p>
+                <h2 class="bio-title">Biographie</h2>
+                <p>${bioData.flavor_text_entries.find((entry: { language: { name: string; }; }) => entry.language.name === "fr").flavor_text.replace(/\n|\f/g, ' ')}</p>
                 </article>
             </div>
-        `;
-
+            `;
+        const btnShiny = document.getElementById("btn-shiny");
+        const imgPokemon = document.getElementById("img-pokemon") as HTMLImageElement;
         let isShiny = false;
-        const imgEl = document.getElementById("img-pokemon-detail") as HTMLImageElement;
 
-        document.getElementById("btn-toggle-shiny")?.addEventListener("click", () => {
+        btnShiny?.addEventListener("click", () => {
             isShiny = !isShiny;
-            imgEl.src = isShiny ? spriteShiny : spriteNormal;
+            imgPokemon.src = isShiny ? spriteShiny : spriteNormal;
         });
+        const boutonCri = document.getElementById("play-cri");
+        const cries = pokemon.cries.latest;
 
-        document.getElementById("btn-cri")?.addEventListener("click", () => {
-            if(pokemon.cries.latest) {
-                const audio = new Audio(pokemon.cries.latest);
-                audio.volume = 0.5;
-                audio.play();
+        boutonCri?.addEventListener("click", () => {
+            const audio = new Audio(cries);
+            audio.play();
+        });
+        const btnEquipe = document.getElementById("btn-equipe");
+        const selectEquipe = document.getElementById("select-equipe") as HTMLSelectElement;
+        btnEquipe?.addEventListener("click", () => {
+            const choix = selectEquipe.value;
+            let tableauEquipe: number [] = [];
+
+            if (choix == "1") {
+                tableauEquipe = tableauEquipe1;
             }
-        });
-
-        document.getElementById("btn-equipe")?.addEventListener("click", () => {
-            const select = document.getElementById("select-equipe") as HTMLSelectElement;
-            const choix = select.value;
-
-            let targetArray = choix === "1" ? tableauEquipe1 : choix === "2" ? tableauEquipe2 : tableauEquipe3;
-            let storageKey = choix === "1" ? "equipe1" : choix === "2" ? "equipe2" : "equipe3";
-
-            if (targetArray.length >= 6) {
-                alert("Cette équipe est déjà complète !");
+            if (choix == "2") {
+                tableauEquipe = tableauEquipe2;
+            }
+            if (choix == "3") {
+                tableauEquipe = tableauEquipe3;
+            }
+            if (tableauEquipe.length >= 6) {
+                alert("Cette équipe est déjà complète");
                 return;
             }
-
-            if (targetArray.includes(pokemon.id)) {
-                alert("Ce Pokémon est déjà dans l'équipe !");
-                return;
-            }
-
-            targetArray.push(pokemon.id);
-            localStorage.setItem(storageKey, JSON.stringify(targetArray));
+            tableauEquipe.push(pokemon.id);
 
             alert(`Pokémon ajouté à l'équipe ${choix}`);
-            console.log(`Equipe ${choix} :`, targetArray);
+
+            localStorage.setItem('team1', JSON.stringify(tableauEquipe1));
+            console.log(tableauEquipe1);
+
+            localStorage.setItem('team2', JSON.stringify(tableauEquipe2));
+            console.log(tableauEquipe2);
+
+            localStorage.setItem('team3', JSON.stringify(tableauEquipe3));
+            console.log(tableauEquipe3);
         });
-
-        afficherPagination(id);
-
+        afficherPagination(id)
     } catch (error) {
-        console.error("Erreur chargement détail:", error);
+        console.error(error);
     }
 }
 
@@ -123,15 +122,6 @@ function afficherPagination(currentId: number) {
         <footer class="detail-footer" style="background: linear-gradient(to bottom, #2a2a2a 0%, #000 100%); border-top: 4px solid #555; height: 48px; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; font-family: 'Chakra Petch', sans-serif; position: fixed; bottom: 0; left: 0; width: 100%; z-index: 1000;">
             <div style="display: flex; gap: 10px;">
                 <button id="btn-detail-prev" style="background:none; border:none; color:#666; font-size:28px; font-weight:900; cursor:pointer; ${currentId <= 1 ? 'opacity:0.3; cursor:default;' : ''}">«</button>
-            </div>
-
-            <div style="display: flex; gap: 2px;">
-                <button style="background:#e0e0e0; color:#111; border:none; padding:5px 15px; font-weight:bold; transform:skewX(-20deg);">
-                    <span style="display:inline-block; transform:skewX(20deg);">INFO</span>
-                </button>
-                <button style="background:#222; color:#888; border:1px solid #444; padding:5px 15px; font-weight:bold; transform:skewX(-20deg);">
-                    <span style="display:inline-block; transform:skewX(20deg);">STATS</span>
-                </button>
             </div>
 
             <div style="display: flex; gap: 10px; align-items:center;">
