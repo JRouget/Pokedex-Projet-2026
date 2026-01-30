@@ -1,7 +1,7 @@
 import { changerScene } from './router.ts';
 import './composants/footer-detail.ts';
 
-function chargerEquipe(nom: string): number[] {
+function chargerEquipe(nom: string): number[] { // initialisation des équipes, [] si vide, ou alors avec les éléments.
     const data = localStorage.getItem(nom);
     return data ? JSON.parse(data) : [];
 }
@@ -17,15 +17,15 @@ export async function chargerDetails(id: number) {
         return;
     }
     try {
-        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`) // Refacto : à mettre dans une fonction
         const pokemon = await response.json();
 
         const container = document.getElementById("pokemon-detail");
-        if (!container) {
+        if (!container) { // évite le cas null
             return;
         }
         const types = pokemon.types.map((t: { type: { name: any; }; }) => t.type.name).join(', ');
-        const bio = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
+        const bio = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`); // refacto : à mettre dans une fonction
         const bioData = await bio.json();
         const spriteNormal = pokemon.sprites.front_default;
         const spriteShiny = pokemon.sprites.front_shiny;
@@ -59,7 +59,7 @@ export async function chargerDetails(id: number) {
                     <div class="scene">
                         <h2 class="evolution-title">Évolutions</h2>
                         <div class="evolution-chain">
-                            
+                        
                         </div>
                     </div>
                     <div id="stats" class="scene">
@@ -73,7 +73,7 @@ export async function chargerDetails(id: number) {
                 </div>
                 <article class="pokemon-bio">
                 <h2 class="bio-title">Biographie</h2>
-                <p>${bioData.flavor_text_entries.find((entry: { language: { name: string; }; }) => entry.language.name === "fr").flavor_text.replace(/\n|\f/g, ' ')}</p>
+                <p>${bioData.flavor_text_entries.find((entry: { language: { name: string; }; }) => entry.language.name === "fr").flavor_text.replace(/[\n\f]/g, ' ')}</p>
                 </article>
             </div>
 
@@ -167,8 +167,8 @@ function afficherPanelEquipe(){
         panel.classList.remove("visible");
         panel.classList.add("hidden");
     });
-    
-    }
+}
+
 
 function afficherPagination(currentId: number) {
     const footerContainer = document.getElementById("detail-footer-container");
@@ -215,4 +215,5 @@ function afficherPagination(currentId: number) {
     })
 }
 
-    window.afficherPanelEquipe = afficherPanelEquipe;
+// window.afficherPanelEquipe = afficherPanelEquipe;
+

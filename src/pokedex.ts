@@ -96,7 +96,7 @@ function renderList(list: LitePokemon[]) {
 
 
     list.slice(0, pkmPerPage).forEach((pokemon) => {
-        const id = pokemon.url.split('/').filter(Boolean).pop();
+        const id = pokemon.url.split('/').filter(Boolean).pop(); // récupération de l'ID du pokémon
         const image = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
 
 
@@ -109,7 +109,7 @@ function renderList(list: LitePokemon[]) {
         `;
 
 
-        card.addEventListener('click', () => {
+        card.addEventListener('click', () => { // quand on click sur la
             if (id) {
                 changerScene("scene-detail");
                 chargerDetails(parseInt(id));
