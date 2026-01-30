@@ -64,6 +64,7 @@ class pokeFooter extends HTMLElement {
         })
 
         shadow.getElementById("btn-team")?.addEventListener("click", ()=> {
+            //ouverture du panneau sur la page
             this.dispatchEvent(new CustomEvent("team-click", {bubbles: true}));
         })
     }

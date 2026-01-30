@@ -119,13 +119,14 @@ export async function chargerDetails(id: number) {
 
             alert(`Pokémon ajouté à l'équipe ${choix}`);
 
-            localStorage.setItem('team1', JSON.stringify(tableauEquipe1));
+            localStorage.setItem('equipe1', JSON.stringify(tableauEquipe1));
+            //remove
             console.log(tableauEquipe1);
 
-            localStorage.setItem('team2', JSON.stringify(tableauEquipe2));
+            localStorage.setItem('equipe2', JSON.stringify(tableauEquipe2));
             console.log(tableauEquipe2);
 
-            localStorage.setItem('team3', JSON.stringify(tableauEquipe3));
+            localStorage.setItem('equipe3', JSON.stringify(tableauEquipe3));
             console.log(tableauEquipe3);
 
 
@@ -168,7 +169,6 @@ function afficherPanelEquipe(){
     });
     
     }
-    window.afficherPanelEquipe = afficherPanelEquipe;
 
 function afficherPagination(currentId: number) {
     const footerContainer = document.getElementById("detail-footer-container");
@@ -214,3 +214,5 @@ function afficherPagination(currentId: number) {
         afficherPanelEquipe();
     })
 }
+
+    window.afficherPanelEquipe = afficherPanelEquipe;
