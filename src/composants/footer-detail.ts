@@ -1,4 +1,5 @@
 import { chargerDetails } from "../detail";
+import { afficherPanelEquipe } from "./panel";
 
 class pokeFooter extends HTMLElement {
     constructor() {
@@ -53,7 +54,7 @@ class pokeFooter extends HTMLElement {
         shadow.getElementById("btn-prev")?.addEventListener("click", () => {
             if (currentId > 1) {
                 history.pushState({id: currentId-1}, '', `${window.location.origin}?id=${currentId - 1}`)
-            chargerDetails(currentId - 1)
+                chargerDetails(currentId - 1)
             }
         })
 
@@ -63,7 +64,7 @@ class pokeFooter extends HTMLElement {
             chargerDetails(currentId + 1)
         })
 
-        shadow.getElementById("btn-team")?.addEventListener("click", ()=> {
+        shadow.getElementById<shadow>("btn-team")?.addEventListener("click", ()=> {
             //ouverture du panneau sur la page
             this.dispatchEvent(new CustomEvent("team-click", {bubbles: true}));
         })

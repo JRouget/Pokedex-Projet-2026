@@ -1,6 +1,10 @@
-import { changerScene } from './router.ts';
 import './composants/footer-detail.ts';
+import './composants/panel.ts';
+import { afficherPanelEquipe } from './composants/panel.ts';
 
+//recherche d'une équipe sauvegardée dans le localstorage sous une clé
+//convertion en chaine de caractère
+//renvoie un tableau
 function chargerEquipe(nom: string): number[] {
     const data = localStorage.getItem(nom);
     return data ? JSON.parse(data) : [];
@@ -129,90 +133,9 @@ export async function chargerDetails(id: number) {
             localStorage.setItem('equipe3', JSON.stringify(tableauEquipe3));
             console.log(tableauEquipe3);
 
-
-            afficherPanelEquipe();
-
         });
-        afficherPagination(id)
+        
     } catch (error) {
         console.error(error);
     }
 }
-
-function afficherPanelEquipe(){
-    const panel = document.getElementById("team-panel");
-    if (!panel) return;
-
-    panel.innerHTML = `
-    <h2 class="team-title">Equipes</h2>
-    <div class="team-list">
-        <h3>Equipe 1</h3>
-        <p>${tableauEquipe1.length ? tableauEquipe1.map(id=> `<span>#${id}</span>`).join(""): "Vide"}</p>
-    </div>
-    <div class="team-list">
-        <h3>Equipe 2</h3>
-        <p>${tableauEquipe2.length ? tableauEquipe2.map(id=> `<span>#${id}</span>`).join(""): "Vide"}</p>
-    </div>
-    <div class="team-list">
-        <h3>Equipe 3</h3>
-        <p>${tableauEquipe3.length ? tableauEquipe3.map(id=> `<span>#${id}</span>`).join(""): "Vide"}</p>
-    </div>
-    <button id="close-team-panel" class="btn-shinny">Fermer</button>
-    `;
-
-    panel.classList.remove("hidden");
-    panel.classList.add("visible");
-
-    document.getElementById("close-team-panel")?.addEventListener("click", ()=> {
-        panel.classList.remove("visible");
-        panel.classList.add("hidden");
-    });
-    
-    }
-
-function afficherPagination(currentId: number) {
-    const footerContainer = document.getElementById("detail-footer-container");
-
-    if (!footerContainer) return;
-
-    footerContainer.innerHTML = `
-        <footer class="detail-footer" style="background: linear-gradient(to bottom, #2a2a2a 0%, #000 100%); border-top: 4px solid #555; height: 48px; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; font-family: 'Chakra Petch', sans-serif; position: fixed; bottom: 0; left: 0; width: 100%; z-index: 1000;">
-            <div style="display: flex; gap: 10px;">
-                <button id="btn-detail-prev" style="background:none; border:none; color:#666; font-size:28px; font-weight:900; cursor:pointer; ${currentId <= 1 ? 'opacity:0.3; cursor:default;' : ''}">«</button>
-            </div>
-
-            <button id="btn-team" style="background:#1a1a1a; border:1px solid #444; color:white; padding:4px 8px; cursor:pointer;">
-                TEAM
-            </button>
-
-
-            <div style="display: flex; gap: 10px; align-items:center;">
-                <button id="btn-detail-next" style="background:none; border:none; color:#666; font-size:28px; font-weight:900; cursor:pointer;">»</button>
-                
-                <button id="btn-detail-esc" style="display:flex; align-items:center; gap:5px; background:#1a1a1a; border:1px solid #444; color:white; padding:4px 8px; cursor:pointer;">
-                    <span style="color:#3399ff; font-weight:900; transform:rotate(90deg); display:inline-block;">U</span> ESC
-                </button>
-            </div>
-        </footer>
-    `;
-
-    document.getElementById("btn-detail-prev")?.addEventListener("click", () => {
-        if (currentId > 1) {
-            chargerDetails(currentId - 1);
-        }
-    });
-
-    document.getElementById("btn-detail-next")?.addEventListener("click", () => {
-        chargerDetails(currentId + 1);
-    });
-
-    document.getElementById("btn-detail-esc")?.addEventListener("click", () => {
-        changerScene("scene-liste");
-    });
-
-    document.getElementById("btn-team")?.addEventListener("click", ()=>{
-        afficherPanelEquipe();
-    })
-}
-
-    window.afficherPanelEquipe = afficherPanelEquipe;
