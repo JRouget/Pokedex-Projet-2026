@@ -2,10 +2,10 @@ import './composants/footer-detail.ts';
 import './composants/panel.ts';
 import { afficherPanelEquipe } from './composants/panel.ts';
 
-//recherche d'une équipe sauvegardée dans le localstorage sous une clé
-//convertion en chaine de caractère
-//renvoie un tableau
-function chargerEquipe(nom: string): number[] {
+// recherche d'une équipe sauvegardée dans le localstorage sous une clé
+// convertion en chaine de caractère
+// renvoie un tableau
+export function chargerEquipe(nom: string): number[] { // initialisation des équipes, [] si vide, ou alors avec les éléments.
     const data = localStorage.getItem(nom);
     return data ? JSON.parse(data) : [];
 }
@@ -13,7 +13,6 @@ function chargerEquipe(nom: string): number[] {
 let tableauEquipe1: number[] = chargerEquipe("equipe1");
 let tableauEquipe2: number[] = chargerEquipe("equipe2");
 let tableauEquipe3: number[] = chargerEquipe("equipe3");
-
 
 export async function chargerDetails(id: number) {
     if (!id) {
@@ -28,12 +27,11 @@ export async function chargerDetails(id: number) {
         if (!container) {
             return;
         }
-        const types = pokemon.types.map((t: { type: { name: any; }; }) => t.type.name).join(', ');
+        const types = pokemon.types.map((t: { type: { name: any } }) => t.type.name).join(', ');
         const bio = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
         const bioData = await bio.json();
         const spriteNormal = pokemon.sprites.front_default;
         const spriteShiny = pokemon.sprites.front_shiny;
-        
 
         container.innerHTML = `
             <div class="details-container">
@@ -63,7 +61,7 @@ export async function chargerDetails(id: number) {
                     <div class="scene">
                         <h2 class="evolution-title">Évolutions</h2>
                         <div class="evolution-chain">
-                            
+                        
                         </div>
                     </div>
                     <div id="stats" class="scene">
@@ -77,13 +75,12 @@ export async function chargerDetails(id: number) {
                 </div>
                 <article class="pokemon-bio">
                 <h2 class="bio-title">Biographie</h2>
-                <p>${bioData.flavor_text_entries.find((entry: { language: { name: string; }; }) => entry.language.name === "fr").flavor_text.replace(/\n|\f/g, ' ')}</p>
+                <p>${bioData.flavor_text_entries.find((entry: { language: { name: string } }) => entry.language.name === "fr").flavor_text.replace(/[\n\f]/g, ' ')}</p>
                 </article>
             </div>
 
             <footer-detail></footer-detail>
             `;
-    
 
         const btnShiny = document.getElementById("btn-shiny");
         const imgPokemon = document.getElementById("img-pokemon") as HTMLImageElement;
@@ -93,6 +90,7 @@ export async function chargerDetails(id: number) {
             isShiny = !isShiny;
             imgPokemon.src = isShiny ? spriteShiny : spriteNormal;
         });
+
         const boutonCri = document.getElementById("play-cri");
         const cries = pokemon.cries.latest;
 
@@ -100,41 +98,32 @@ export async function chargerDetails(id: number) {
             const audio = new Audio(cries);
             audio.play();
         });
+
         const btnEquipe = document.getElementById("btn-equipe");
         const selectEquipe = document.getElementById("select-equipe") as HTMLSelectElement;
+
         btnEquipe?.addEventListener("click", () => {
             const choix = selectEquipe.value;
-            let tableauEquipe: number [] = [];
+            let tableauEquipe: number[] = [];
 
-            if (choix == "1") {
-                tableauEquipe = tableauEquipe1;
-            }
-            if (choix == "2") {
-                tableauEquipe = tableauEquipe2;
-            }
-            if (choix == "3") {
-                tableauEquipe = tableauEquipe3;
-            }
+            if (choix == "1") tableauEquipe = tableauEquipe1;
+            if (choix == "2") tableauEquipe = tableauEquipe2;
+            if (choix == "3") tableauEquipe = tableauEquipe3;
+
             if (tableauEquipe.length >= 6) {
                 alert("Cette équipe est déjà complète");
                 return;
             }
+
             tableauEquipe.push(pokemon.id);
 
             alert(`Pokémon ajouté à l'équipe ${choix}`);
 
             localStorage.setItem('equipe1', JSON.stringify(tableauEquipe1));
-            //remove
-            console.log(tableauEquipe1);
-
             localStorage.setItem('equipe2', JSON.stringify(tableauEquipe2));
-            console.log(tableauEquipe2);
-
             localStorage.setItem('equipe3', JSON.stringify(tableauEquipe3));
-            console.log(tableauEquipe3);
-
         });
-        
+
     } catch (error) {
         console.error(error);
     }

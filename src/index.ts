@@ -11,7 +11,6 @@ export function initIntro() {
     }
 
     document.addEventListener('keydown', (event) => {
-        
         const introVisible = document.getElementById('scene-intro')?.classList.contains('active');
         if (introVisible && (event.key === 'Enter' || event.key === 'Escape')) {
             startOS();

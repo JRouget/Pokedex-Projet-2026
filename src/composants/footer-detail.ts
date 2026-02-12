@@ -38,11 +38,6 @@ class pokeFooter extends HTMLElement {
         <button id="btn-next" class="arrow-btn">
             <span class="chevron">»</span>
         </button>
-
-        <a href="../pokedex.html" class="esc-module">
-            <span class="u-icon">U</span>
-            <span class="esc-text">ESC</span>
-        </a>
     </div>
 </footer>
         `
