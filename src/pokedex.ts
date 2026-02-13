@@ -22,6 +22,7 @@ export async function chargerPokedex(pageNumber: number = 1) {
     if (!document.getElementById("search-input")) {
         //Injection de la structure HTML
         container.innerHTML = `
+        <link rel="stylesheet" href="style/pokedex-style.css" />
         <div id="list-cards" style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px; padding-bottom:60px;"></div>
         
         <footer class="pokedex-footer">

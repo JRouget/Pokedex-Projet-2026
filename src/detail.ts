@@ -30,8 +30,34 @@ export async function chargerDetails(id: number) {
         const spriteNormal = pokemon.sprites.front_default;
         const spriteShiny = pokemon.sprites.front_shiny;
         
+        const evoRequete = await fetch(bioData.evolution_chain.url);
+        const evoData = await evoRequete.json();
+        
+        let evolutionsHtml = '';
+        let etapeEvo = evoData.chain;
+
+        while (etapeEvo) {
+            const nomEvo = etapeEvo.species.name;
+            const idEvo = etapeEvo.species.url.split('/')[6]; 
+            const imgEvo = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${idEvo}.png`;
+
+            evolutionsHtml += `
+                <div class="evo-item">
+                    <img src="${imgEvo}" alt="${nomEvo}">
+                    <span>${nomEvo}</span>
+                </div>
+            `;
+
+            etapeEvo = etapeEvo.evolves_to[0]; 
+            
+            if (etapeEvo) { 
+                evolutionsHtml += `<div class="evo-fleche">→</div>`;
+            }
+        }
+
 
         container.innerHTML = `
+        <link rel="stylesheet" href="style/card-style.css" />
             <div class="details-container">
                 <div class="pokemon-imgStats">
                     <article class="pokemon-image">
@@ -40,7 +66,7 @@ export async function chargerDetails(id: number) {
                         </button>
                     </article>
                     
-                    <div id="info" class="scene.active">
+                    <div id="info" class="scene active">
                         <aside class="pokemon-info">
                             <h1 class="info-title">${pokemon.name.toUpperCase()}</h1>
                             <p><strong>N° :</strong> ${pokemon.id}</p>
@@ -56,18 +82,30 @@ export async function chargerDetails(id: number) {
                             <button id="btn-equipe" class="btn-shiny">Ajouter à l'équipe</button>
                         </aside>
                     </div>
-                    <div class="scene">
-                        <h2 class="evolution-title">Évolutions</h2>
-                        <div class="evolution-chain">
-                        
-                        </div>
+                    <div id="evolutions" class="scene">
+                        <aside class="pokemon-info">
+                            <h2 class="evolution-title">Évolutions</h2>
+                            
+                            <div class="evolution-chain">
+                                ${evolutionsHtml}
+                            </div>
+                            
+                        </aside>
                     </div>
                     <div id="stats" class="scene">
                     <aside class="pokemon-info">
                         <h2 class="stats-title">Statistiques</h2>
-                        <ol class="stats-list">
-                            <li>bonjour</li>
-                        </ol>
+                        <ul class="stats-list">
+                                ${pokemon.stats.map((s: any) => `
+                                    <li class="stat-item">
+                                        <span class="stat-nom">${s.stat.name}</span>
+                                        <span class="stat-valeur">${s.base_stat}</span>
+                                        <div class="stat-barre-fond">
+                                            <div class="stat-barre-remplissage" style="width: ${s.base_stat}%;"></div>
+                                        </div>
+                                    </li>
+                                `).join('')}
+                            </ul>
                         </aside>
                     </div>
                 </div>
@@ -79,7 +117,26 @@ export async function chargerDetails(id: number) {
 
             <footer-detail></footer-detail>
             `;
-    
+
+
+
+        const footerComponent = container.querySelector('footer-detail');
+
+        footerComponent?.addEventListener("tab-change", (e: any) => {
+            const cibleId = e.detail.targetScene; 
+            const scenes = container.querySelectorAll('.scene');
+
+            scenes.forEach(scene => scene.classList.remove('active'));
+
+            const sceneAAfficher = container.querySelector(`#${cibleId}`);
+            if (sceneAAfficher) {
+                sceneAAfficher.classList.add('active');
+            }
+        });
+
+        footerComponent?.addEventListener("team-click", () => {
+            afficherPanelEquipe();
+        });
 
         const btnShiny = document.getElementById("btn-shiny");
         const imgPokemon = document.getElementById("img-pokemon") as HTMLImageElement;
@@ -100,7 +157,7 @@ export async function chargerDetails(id: number) {
         const selectEquipe = document.getElementById("select-equipe") as HTMLSelectElement;
         btnEquipe?.addEventListener("click", () => {
             const choix = selectEquipe.value;
-            let tableauEquipe: number [] = [];
+            let tableauEquipe: number[] = [];
 
             if (choix == "1") {
                 tableauEquipe = tableauEquipe1;
@@ -139,7 +196,7 @@ export async function chargerDetails(id: number) {
     }
 }
 
-function afficherPanelEquipe(){
+function afficherPanelEquipe() {
     const panel = document.getElementById("team-panel");
     if (!panel) return;
 
@@ -147,15 +204,15 @@ function afficherPanelEquipe(){
     <h2 class="team-title">Equipes</h2>
     <div class="team-list">
         <h3>Equipe 1</h3>
-        <p>${tableauEquipe1.length ? tableauEquipe1.map(id=> `<span>#${id}</span>`).join(""): "Vide"}</p>
+        <p>${tableauEquipe1.length ? tableauEquipe1.map(id => `<span>#${id}</span>`).join("") : "Vide"}</p>
     </div>
     <div class="team-list">
         <h3>Equipe 2</h3>
-        <p>${tableauEquipe2.length ? tableauEquipe2.map(id=> `<span>#${id}</span>`).join(""): "Vide"}</p>
+        <p>${tableauEquipe2.length ? tableauEquipe2.map(id => `<span>#${id}</span>`).join("") : "Vide"}</p>
     </div>
     <div class="team-list">
         <h3>Equipe 3</h3>
-        <p>${tableauEquipe3.length ? tableauEquipe3.map(id=> `<span>#${id}</span>`).join(""): "Vide"}</p>
+        <p>${tableauEquipe3.length ? tableauEquipe3.map(id => `<span>#${id}</span>`).join("") : "Vide"}</p>
     </div>
     <button id="close-team-panel" class="btn-shinny">Fermer</button>
     `;
@@ -163,7 +220,7 @@ function afficherPanelEquipe(){
     panel.classList.remove("hidden");
     panel.classList.add("visible");
 
-    document.getElementById("close-team-panel")?.addEventListener("click", ()=> {
+    document.getElementById("close-team-panel")?.addEventListener("click", () => {
         panel.classList.remove("visible");
         panel.classList.add("hidden");
     });
@@ -210,7 +267,7 @@ function afficherPagination(currentId: number) {
         changerScene("scene-liste");
     });
 
-    document.getElementById("btn-team")?.addEventListener("click", ()=>{
+    document.getElementById("btn-team")?.addEventListener("click", () => {
         afficherPanelEquipe();
     })
 }

@@ -4,6 +4,12 @@ a {
     display: block;
 }
 
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #101820;
+}
+
 .scene-detail {
     display: flex;
     flex-direction: column;
@@ -21,6 +27,26 @@ a {
     background-size: 100px 100px, 100px 100px, 100px 100px, cover;
     background-attachment: fixed;
     image-rendering: pixelated;
+    
+}
+
+.scene {
+    display: none;
+}
+
+.scene.active {
+    display: block;
+    flex: 1; 
+    width: 100%;
+    height: 100%; 
+    padding: 15px;
+}
+
+.pokemon-info {
+    border: 3px solid #a0a0a0;
+    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.1);
+    font-size: 1.2rem;
+    padding: 30px;
 }
 
 .btn-cri {
@@ -74,17 +100,6 @@ a {
     width: 300px;
     height: 300px;
     image-rendering: pixelated;
-    
-}
-
-.pokemon-info {
-    flex: 1;
-    background-color: white;
-    padding: 30px;
-    border: 3px solid #a0a0a0;
-    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.1);
-    font-size: 1.2rem;
-    line-height: 1.6;
 }
 
 .info-title {
@@ -103,7 +118,6 @@ a {
     border: 4px solid #444;
     border-radius: 6px;
     border-top: 6px solid #aaff00;
-
     font-size: 1.4rem;
     line-height: 1.5;
     min-height: 150px;
@@ -264,4 +278,86 @@ a {
     transform: rotate(180deg);
     top: 0px;
     right: -1px;
+}
+
+
+
+
+
+
+
+
+.stats-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 1rem;
+}
+
+.stat-nom {
+    width: 130px;
+    font-weight: bold;
+    color: #444;
+}
+
+.stat-valeur {
+    width: 40px;
+    text-align: right;
+    margin-right: 15px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+}
+
+.stat-barre-fond {
+    flex: 1;
+    height: 12px;
+    background-color: #ddd;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.stat-barre-remplissage {
+    height: 100%;
+    background: #03009c;
+    border-radius: 6px;
+}
+
+
+.evolution-chain {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.evo-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.evo-item img {
+    width: 90px;
+    height: 90px;
+    background-color: #eee;
+    border-radius: 50%;
+    border: 3px solid #ccc;
+    image-rendering: pixelated;
+}
+
+.evo-fleche {
+    font-size: 30px;
+    color: #666;
+    font-weight: bold;
 }
