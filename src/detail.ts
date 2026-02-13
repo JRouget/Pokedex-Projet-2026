@@ -1,5 +1,5 @@
 import './composants/footer-detail.ts';
-import { afficherPanelEquipe } from './composants/panel.ts';
+
 
 export function chargerEquipe(nom: string): number[] {
     const data = localStorage.getItem(nom);
@@ -27,6 +27,8 @@ export async function chargerDetails(id: number) {
 
         const bio = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
         const bioData = await bio.json();
+        const entreeFr = bioData.flavor_text_entries.find((entry: any) => entry.language.name === "fr");
+        const bioText = entreeFr ? entreeFr.flavor_text.replace(/\f/g, ' ') : "Aucune biographie disponible.";
 
         const spriteNormal = pokemon.sprites.front_default;
         const spriteShiny = pokemon.sprites.front_shiny;
