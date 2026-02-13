@@ -1,10 +1,9 @@
 import { chargerDetails } from "../detail";
-import { afficherPanelEquipe } from "./panel";
 
 class pokeFooter extends HTMLElement {
     constructor() {
-        super()
-        const shadow = this.attachShadow({ mode: 'open' })
+        super();
+        const shadow = this.attachShadow({ mode: 'open' });
 
         shadow.innerHTML = `
         <link rel="stylesheet" href="../../style/card-style.css">
@@ -29,7 +28,7 @@ class pokeFooter extends HTMLElement {
     </div>
 
     <div>
-    <button class="tech-tab">
+        <button id="btn-team" class="tech-tab">
             <span class="tab-text">TEAM</span>
         </button>
     </div>
@@ -40,30 +39,29 @@ class pokeFooter extends HTMLElement {
         </button>
     </div>
 </footer>
-        `
+        `;
 
-        const url = new URL(window.location.href)
-        const idParam = url.searchParams.get('id')
-        const currentId = idParam ? parseInt(idParam, 10) : 1
+        const url = new URL(window.location.href);
+        const idParam = url.searchParams.get('id');
+        const currentId = idParam ? parseInt(idParam, 10) : 1;
 
         shadow.getElementById("btn-prev")?.addEventListener("click", () => {
             if (currentId > 1) {
-                history.pushState({id: currentId-1}, '', `${window.location.origin}?id=${currentId - 1}`)
-                chargerDetails(currentId - 1)
+                history.pushState({ id: currentId - 1 }, '', `${window.location.origin}?id=${currentId - 1}`);
+                chargerDetails(currentId - 1);
             }
-        })
+        });
 
         shadow.getElementById("btn-next")?.addEventListener("click", () => {
-        //    window.location.href = `?id=${currentId + 1}`
-           history.pushState({id: currentId+1}, '', `${window.location.origin}?id=${currentId + 1}`)
-            chargerDetails(currentId + 1)
-        })
+            history.pushState({ id: currentId + 1 }, '', `${window.location.origin}?id=${currentId + 1}`);
+            chargerDetails(currentId + 1);
+        });
 
-        shadow.getElementById<shadow>("btn-team")?.addEventListener("click", ()=> {
-            //ouverture du panneau sur la page
-            this.dispatchEvent(new CustomEvent("team-click", {bubbles: true}));
-        })
+
+        shadow.getElementById("btn-team")?.addEventListener("click", () => {
+            this.dispatchEvent(new CustomEvent("team-click", { bubbles: true, composed: true}));
+        });
     }
 }
 
-window.customElements.define('footer-detail', pokeFooter)
+window.customElements.define('footer-detail', pokeFooter);
