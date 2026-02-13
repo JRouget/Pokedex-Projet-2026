@@ -1,7 +1,7 @@
-import { changerScene } from './router.ts';
 import './composants/footer-detail.ts';
+import { afficherPanelEquipe } from './composants/panel.ts';
 
-export function chargerEquipe(nom: string): number[] { // initialisation des équipes, [] si vide, ou alors avec les éléments.
+export function chargerEquipe(nom: string): number[] {
     const data = localStorage.getItem(nom);
     return data ? JSON.parse(data) : [];
 }
@@ -10,23 +10,24 @@ let tableauEquipe1: number[] = chargerEquipe("equipe1");
 let tableauEquipe2: number[] = chargerEquipe("equipe2");
 let tableauEquipe3: number[] = chargerEquipe("equipe3");
 
-
 export async function chargerDetails(id: number) {
     if (!id) {
         window.location.href = "index.html";
         return;
     }
+
     try {
-        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`) // Refacto : à mettre dans une fonction
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
         const pokemon = await response.json();
 
         const container = document.getElementById("pokemon-detail");
-        if (!container) { // évite le cas null
-            return;
-        }
-        const types = pokemon.types.map((t: { type: { name: any; }; }) => t.type.name).join(', ');
-        const bio = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`); // refacto : à mettre dans une fonction
+        if (!container) return;
+
+        const types = pokemon.types.map((t: { type: { name: any } }) => t.type.name).join(', ');
+
+        const bio = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
         const bioData = await bio.json();
+
         const spriteNormal = pokemon.sprites.front_default;
         const spriteShiny = pokemon.sprites.front_shiny;
         
@@ -73,12 +74,15 @@ export async function chargerDetails(id: number) {
                             <p><strong>Types :</strong> ${types}</p>
                             <p><strong>Poids :</strong> ${pokemon.weight / 10} kg</p>
                             <p><strong>Taille :</strong> ${pokemon.height / 10} m</p>
+
                             <button id="btn-shiny" class="btn-shiny">Shiny</button>
+
                             <select id="select-equipe" class="btn-shiny">
                                 <option value="1">Equipe 1</option>
                                 <option value="2">Equipe 2</option>
                                 <option value="3">Equipe 3</option>
                             </select>
+
                             <button id="btn-equipe" class="btn-shiny">Ajouter à l'équipe</button>
                         </aside>
                     </div>
@@ -92,6 +96,7 @@ export async function chargerDetails(id: number) {
                             
                         </aside>
                     </div>
+
                     <div id="stats" class="scene">
                     <aside class="pokemon-info">
                         <h2 class="stats-title">Statistiques</h2>
@@ -109,9 +114,10 @@ export async function chargerDetails(id: number) {
                         </aside>
                     </div>
                 </div>
+
                 <article class="pokemon-bio">
-                <h2 class="bio-title">Biographie</h2>
-                <p>${bioData.flavor_text_entries.find((entry: { language: { name: string; }; }) => entry.language.name === "fr").flavor_text.replace(/[\n\f]/g, ' ')}</p>
+                    <h2 class="bio-title">Biographie</h2>
+                    <p>${bioText}</p>
                 </article>
             </div>
 
@@ -138,6 +144,7 @@ export async function chargerDetails(id: number) {
             afficherPanelEquipe();
         });
 
+        // --- SHINY ---
         const btnShiny = document.getElementById("btn-shiny");
         const imgPokemon = document.getElementById("img-pokemon") as HTMLImageElement;
         let isShiny = false;
@@ -146,51 +153,44 @@ export async function chargerDetails(id: number) {
             isShiny = !isShiny;
             imgPokemon.src = isShiny ? spriteShiny : spriteNormal;
         });
+
+        // --- CRI ---
         const boutonCri = document.getElementById("play-cri");
         const cries = pokemon.cries.latest;
 
         boutonCri?.addEventListener("click", () => {
             const audio = new Audio(cries);
+            audio.currentTime = 0;
             audio.play();
         });
+
+        // --- AJOUT ÉQUIPE ---
         const btnEquipe = document.getElementById("btn-equipe");
         const selectEquipe = document.getElementById("select-equipe") as HTMLSelectElement;
+
         btnEquipe?.addEventListener("click", () => {
             const choix = selectEquipe.value;
-            let tableauEquipe: number[] = [];
+            let tableauEquipe: number[];
 
-            if (choix == "1") {
-                tableauEquipe = tableauEquipe1;
-            }
-            if (choix == "2") {
-                tableauEquipe = tableauEquipe2;
-            }
-            if (choix == "3") {
-                tableauEquipe = tableauEquipe3;
-            }
+            if (choix === "1") tableauEquipe = tableauEquipe1;
+            else if (choix === "2") tableauEquipe = tableauEquipe2;
+            else tableauEquipe = tableauEquipe3;
+
             if (tableauEquipe.length >= 6) {
                 alert("Cette équipe est déjà complète");
                 return;
             }
+
             tableauEquipe.push(pokemon.id);
+            localStorage.setItem(`equipe${choix}`, JSON.stringify(tableauEquipe));
 
             alert(`Pokémon ajouté à l'équipe ${choix}`);
-
-            localStorage.setItem('equipe1', JSON.stringify(tableauEquipe1));
-            //remove
-            console.log(tableauEquipe1);
-
-            localStorage.setItem('equipe2', JSON.stringify(tableauEquipe2));
-            console.log(tableauEquipe2);
-
-            localStorage.setItem('equipe3', JSON.stringify(tableauEquipe3));
-            console.log(tableauEquipe3);
-
-
-            afficherPanelEquipe();
-
         });
-        afficherPagination(id)
+
+        document.addEventListener("team-click", () => {
+            afficherPanelEquipe(tableauEquipe1, tableauEquipe2, tableauEquipe3);
+        });
+
     } catch (error) {
         console.error(error);
     }

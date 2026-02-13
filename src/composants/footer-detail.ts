@@ -27,18 +27,18 @@ class pokeFooter extends HTMLElement {
                 </button>
             </div>
 
-            <div>
-                <button id="btn-team" class="tech-tab">
-                    <span class="tab-text">TEAM</span>
-                </button>
-            </div>
+    <div>
+        <button id="btn-team" class="tech-tab">
+            <span class="tab-text">TEAM</span>
+        </button>
+    </div>
 
-            <div class="right-controls">
-                <button id="btn-next" class="arrow-btn">
-                    <span class="chevron">»</span>
-                </button>
-            </div>
-        </footer>
+    <div class="right-controls">
+        <button id="btn-next" class="arrow-btn">
+            <span class="chevron">»</span>
+        </button>
+    </div>
+</footer>
         `;
 
         const url = new URL(window.location.href);
@@ -47,7 +47,7 @@ class pokeFooter extends HTMLElement {
 
         shadow.getElementById("btn-prev")?.addEventListener("click", () => {
             if (currentId > 1) {
-                history.pushState({id: currentId-1}, '', `${window.location.origin}?id=${currentId - 1}`);
+                history.pushState({ id: currentId - 1 }, '', `${window.location.origin}?id=${currentId - 1}`);
                 chargerDetails(currentId - 1);
             }
         });
